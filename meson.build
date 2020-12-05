@@ -12,7 +12,7 @@ base_id = 'me.idlesong.cuteedit'
 dependency('glib-2.0', version: '>= 2.56')
 dependency('gio-2.0', version: '>= 2.56')
 dependency('gdk-pixbuf-2.0')
-dependency('gtk+-3.0', version: '>= 3.24.7')
+dependency('gtk+-3.0', version: '>= 3.24.5')
 
 glib_compile_resources = find_program('glib-compile-resources', required: true)
 glib_compile_schemas = find_program('glib-compile-schemas', required: true)
@@ -60,14 +60,31 @@ meson.add_dist_script(
   meson.source_root()
 )
 
-if get_option('profile') == 'development'
-  # Setup pre-commit hook for ensuring coding style is always consistent
-  message('Setting up git pre-commit hook..')
-  run_command('cp', '-f', 'hooks/pre-commit.hook', '.git/hooks/pre-commit')
-endif
+#if get_option('profile') == 'development'
+#  # Setup pre-commit hook for ensuring coding style is always consistent
+#  message('Setting up git pre-commit hook..')
+#  run_command('cp', '-f', 'hooks/pre-commit.hook', '.git/hooks/pre-commit')
+#endif
 
 subdir('data')
 subdir('po')
 subdir('src')
 
 meson.add_install_script('build-aux/meson_post_install.py')
+
+run_target(
+  'release',
+  command: ['scripts/release.sh', meson.project_name(), meson.project_version()]
+)
+
+run_target(
+  'run',
+  command: 'build-aux/run.sh',
+)
+
+test(
+  'cargo test --all',
+  cargo,
+  args: 'test',
+  timeout: 3000,
+)

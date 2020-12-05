@@ -14,7 +14,7 @@ impl Application {
     pub fn new() -> Self {
         let app =
             gtk::Application::new(Some(config::APP_ID), gio::ApplicationFlags::FLAGS_NONE).unwrap();
-        let window = Window::new();
+        let window = Window::new(&app);
 
         let application = Self { app, window };
 
@@ -53,11 +53,39 @@ impl Application {
 
                 about_dialog.connect_response(|dialog, _| dialog.close());
                 about_dialog.show();
-
             })
         );
         self.app
             .set_accels_for_action("win.show-help-overlay", &["<primary>question"]);
+
+        // Below here we connect all actions, meaning that these closures will be run when the respective
+        // action is triggered (e.g. by a button press)
+        // {
+        //     let open_action = gio::SimpleAction::new("open", None);
+        //     open_action.connect_activate(move |_,_| {
+        //         trace!("Handling action: 'open'");
+        //         // window.handle_open_button();
+        //     });
+        //     self.app.add_action(&open_action);
+        // }
+
+        // open file
+        // action!(
+        //     self.app,
+        //     "open",
+        //     clone!(@weak self.window.widget as window => move |_, _| {
+        //         trace!("Handling action: 'open'");
+        //
+        //         let builder = gtk::Builder::from_resource("/me/idlesong/cuteedit/filechooser_dialog.ui");
+        //         get_widget!(builder, gtk::FileChooserDialog, filechooser_dialog);
+        //         filechooser_dialog.set_transient_for(Some(&window));
+        //
+        //         filechooser_dialog.connect_response(|dialog, _| dialog.close());
+        //         filechooser_dialog.show();
+        //     })
+        // );
+        // self.app
+        //     .set_accels_for_action("app.open-file", &["<primary>o"]);
     }
 
     fn setup_signals(&self) {

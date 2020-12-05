@@ -3,13 +3,17 @@ use gtk::prelude::*;
 use crate::config::{APP_ID, PROFILE};
 use crate::window_state;
 
+use gio::{ActionMapExt,
+    // ApplicationExt, SimpleAction
+};
+
 pub struct Window {
     pub widget: gtk::ApplicationWindow,
     settings: gio::Settings,
 }
 
 impl Window {
-    pub fn new() -> Self {
+    pub fn new(app: &gtk::Application) -> Self {
         let settings = gio::Settings::new(APP_ID);
 
         let builder = gtk::Builder::from_resource("/me/idlesong/cuteedit/window.ui");
@@ -20,8 +24,46 @@ impl Window {
             settings,
         };
 
+        window_widget.setup_gactions(app);
+
         window_widget.init();
         window_widget
+    }
+
+    fn setup_gactions(&self, app: &gtk::Application) {
+        // Below here we connect all actions, meaning that these closures will be run when the respective
+        // action is triggered (e.g. by a button press)
+
+        // open file
+        {
+            let open_action = gio::SimpleAction::new("open", None);
+            open_action.connect_activate(clone!(@weak self.widget as window => move |_,_| {
+                trace!("Handling action: 'open' new file");
+                // window.handle_open_button();
+                let builder = gtk::Builder::from_resource("/me/idlesong/cuteedit/filechooser_dialog.ui");
+                get_widget!(builder, gtk::FileChooserDialog, filechooser_dialog);
+                filechooser_dialog.set_transient_for(Some(&window));
+
+                filechooser_dialog.connect_response(|dialog, _| dialog.close());
+                filechooser_dialog.show();
+            }));
+            app.add_action(&open_action);
+        }
+
+        // action!(
+        //     app,
+        //     "open",
+        //     clone!(@weak self.widget as window => move |_, _| {
+        //         trace!("Handling action: 'open' file");
+        //
+        //         let builder = gtk::Builder::from_resource("/me/idlesong/cuteedit/filechooser_dialog.ui");
+        //         get_widget!(builder, gtk::FileChooserDialog, filechooser_dialog);
+        //         filechooser_dialog.set_transient_for(Some(&window));
+        //
+        //         filechooser_dialog.connect_response(|dialog, _| dialog.close());
+        //         filechooser_dialog.show();
+        //     })
+        // );
     }
 
     fn init(&self) {

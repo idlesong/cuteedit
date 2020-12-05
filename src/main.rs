@@ -20,6 +20,8 @@ use application::Application;
 use config::{GETTEXT_PACKAGE, LOCALEDIR};
 
 fn main() {
+    env_logger::Builder::from_default_env().init();
+
     // Prepare i18n
     setlocale(LocaleCategory::LcAll, "");
     bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
