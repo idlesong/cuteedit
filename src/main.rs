@@ -15,6 +15,7 @@ mod config;
 mod static_resources;
 mod window;
 mod window_state;
+mod state;
 
 use application::Application;
 use config::{GETTEXT_PACKAGE, LOCALEDIR};

@@ -1,20 +1,21 @@
 use gio::prelude::*;
 use gtk::prelude::*;
 use std::env;
+use std::rc::Rc;
 
 use crate::config;
-use crate::window::Window;
+use crate::window::MainWin;
 
 pub struct Application {
     app: gtk::Application,
-    window: Window,
+    window: Rc<MainWin>,
 }
 
 impl Application {
     pub fn new() -> Self {
         let app =
             gtk::Application::new(Some(config::APP_ID), gio::ApplicationFlags::FLAGS_NONE).unwrap();
-        let window = Window::new(&app);
+        let window = MainWin::new(&app);
 
         let application = Self { app, window };
 
