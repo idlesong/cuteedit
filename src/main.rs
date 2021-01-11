@@ -2,6 +2,7 @@
 extern crate log;
 #[macro_use]
 extern crate glib;
+extern crate gdk_pixbuf;
 
 use gettextrs::*;
 

@@ -108,6 +108,7 @@ version = "0.1.0"
 dependencies = [
  "env_logger",
  "gdk",
+ "gdk-pixbuf",
  "gettext-rs",
  "gio",
  "glib",

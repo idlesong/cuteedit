@@ -1,6 +1,12 @@
 use gio::prelude::SettingsExt;
 use gtk::prelude::GtkWindowExt;
 
+/// A Struct containing setting switches for the `EditView`
+// pub struct MainState {
+//     pub gschema: gio::Settings,
+//     pub project_path_str: String,
+// }
+
 pub fn load(window: &gtk::ApplicationWindow, settings: &gio::Settings) {
     let width = settings.get_int("window-width");
     let height = settings.get_int("window-height");
