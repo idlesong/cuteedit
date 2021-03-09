@@ -15,7 +15,8 @@ impl Application {
     pub fn new() -> Self {
         let app =
             gtk::Application::new(Some(config::APP_ID), gio::ApplicationFlags::FLAGS_NONE).unwrap();
-        let window = MainWin::new(&app);
+
+        let window = Rc::new(RefCell::new(MainWin::new(&app)));
 
         let application = Self { app, window };
 
